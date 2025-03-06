@@ -1,10 +1,4 @@
-type FocusableElement = HTMLElement & { focus: () => void };
-
-interface FocusManagerOptions {
-  onFocusChange?: (element: FocusableElement) => void;
-  focusAnimation?: (element: FocusableElement) => void;
-  focusOrder?: string[]; // Array of selectors defining the custom focus order
-}
+import { Direction, FocusableElement, FocusManagerOptions } from "./types";
 
 class FocusManager {
   private container: HTMLElement;
@@ -118,16 +112,14 @@ class FocusManager {
     }
   }
 
-  private moveFocus(direction: "up" | "down" | "left" | "right"): void {
+  private moveFocus(direction: Direction): void {
     const nextIndex = this.calculateNextIndex(direction);
     if (nextIndex !== -1) {
       this.setFocus(nextIndex);
     }
   }
 
-  private calculateNextIndex(
-    direction: "up" | "down" | "left" | "right"
-  ): number {
+  private calculateNextIndex(direction: Direction): number {
     let nextIndex = this.currentFocusIndex;
     switch (direction) {
       case "up":
