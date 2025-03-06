@@ -1,4 +1,4 @@
 import 'core-js/stable/array/from';
+import 'core-js/stable/array/includes';
 
-export const message: string[] = Array.from("Hello, Smart TV!");
-console.log(message);
+export { default as FocusManager } from './FocusManager';
