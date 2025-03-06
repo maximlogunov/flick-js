@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES6", // Transpile to ES6 (Babel will handle ES5)
+    "module": "ESNext", // Use ES modules for Rollup
+    "lib": ["DOM", "ES6"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "noEmit": true,
+    "declaration": true,
+},
+  "include": ["src/**/*"]
+}
