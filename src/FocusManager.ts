@@ -1,59 +1,62 @@
-import { IFocusableElement, IFocusManagerOptions, FocusDirection, IFocusManager } from './types';
+import {
+  IFocusableElement,
+  IFocusManagerOptions,
+  FocusDirection,
+  IFocusManager,
+} from "./types";
 
 export class FocusManager implements IFocusManager {
   private focusableElements: Record<string, IFocusableElement> = {};
   private currentFocus: HTMLElement | null = null;
   private options: IFocusManagerOptions = {
-    focusableSelector: '[data-focusable]',
-    focusableAttribute: 'data-focusable',
-    focusKeyAttribute: 'data-focus-key'
+    focusableSelector: "[data-focusable]",
+    focusableAttribute: "data-focusable",
+    focusKeyAttribute: "data-focus-key",
   };
 
-  private boundHandleKeyDown!: (event: KeyboardEvent) => void;
+  private boundHandleKeyDown = this.handleKeyDown.bind(this);
 
-  initialize(options?: IFocusManagerOptions): void {
-    this.options = this.mergeOptions(this.options, options || {});
+  constructor(options?: IFocusManagerOptions) {
+    this.options = this.mergeOptions(this.options, options ?? {});
     this.setupKeyboardListeners();
     this.setupFocusableElements();
   }
 
   private setupKeyboardListeners(): void {
-    this.boundHandleKeyDown = this.handleKeyDown.bind(this);
-    document.addEventListener('keydown', this.boundHandleKeyDown);
+    document.addEventListener("keydown", this.boundHandleKeyDown);
   }
 
   private handleKeyDown(event: KeyboardEvent): void {
     switch (event.key) {
-      case 'ArrowUp':
-        this.moveFocus('up');
+      case "ArrowUp":
+        this.moveFocus("up");
         break;
-      case 'ArrowDown':
-        this.moveFocus('down');
+      case "ArrowDown":
+        this.moveFocus("down");
         break;
-      case 'ArrowLeft':
-        this.moveFocus('left');
+      case "ArrowLeft":
+        this.moveFocus("left");
         break;
-      case 'ArrowRight':
-        this.moveFocus('right');
+      case "ArrowRight":
+        this.moveFocus("right");
         break;
-      case 'Enter':
+      case "Enter":
         this.handleEnterKey();
         break;
-      case 'Back':
+      case "Back":
         this.handleBackKey();
         break;
     }
   }
 
   private setupFocusableElements(): void {
-    var selector = this.options.focusableSelector || '[data-focusable]';
-    var elements = document.querySelectorAll(selector);
-    for (var i = 0; i < elements.length; i++) {
-      var element = elements[i];
+    const selector = this.options.focusableSelector ?? "[data-focusable]";
+    const elements = document.querySelectorAll(selector);
+    Array.from(elements).forEach((element) => {
       if (element instanceof HTMLElement) {
         this.registerFocusable(element);
       }
-    }
+    });
   }
 
   setFocus(element: HTMLElement): void {
@@ -83,36 +86,32 @@ export class FocusManager implements IFocusManager {
     }
   }
 
-  private findNextFocusableElement(direction: FocusDirection): HTMLElement | null {
-    var elements = Object.keys(this.focusableElements).map(function(this: FocusManager, key: string) {
-      return this.focusableElements[key].element;
-    }.bind(this));
+  private findNextFocusableElement(
+    direction: FocusDirection,
+  ): HTMLElement | null {
+    const elements = Object.values(this.focusableElements).map(
+      (item) => item.element,
+    );
     if (!this.currentFocus) return null;
-    var currentIndex = elements.indexOf(this.currentFocus);
-    
-    // Simple implementation - can be improved with element geometry consideration
-    var nextIndex: number;
-    switch (direction) {
-      case 'right':
-        nextIndex = (currentIndex + 1) % elements.length;
-        break;
-      case 'left':
-        nextIndex = currentIndex === 0 ? elements.length - 1 : currentIndex - 1;
-        break;
-      case 'down':
-        nextIndex = (currentIndex + 1) % elements.length;
-        break;
-      case 'up':
-        nextIndex = currentIndex === 0 ? elements.length - 1 : currentIndex - 1;
-        break;
-    }
 
-    return elements[nextIndex];
+    const currentIndex = elements.indexOf(this.currentFocus);
+    const lastIndex = elements.length - 1;
+
+    const nextIndex = {
+      right: (currentIndex + 1) % elements.length,
+      left: currentIndex === 0 ? lastIndex : currentIndex - 1,
+      down: (currentIndex + 1) % elements.length,
+      up: currentIndex === 0 ? lastIndex : currentIndex - 1,
+    }[direction];
+
+    return elements[nextIndex] ?? null;
   }
 
   private getFirstFocusableElement(): HTMLElement | null {
-    const elements = Object.values(this.focusableElements).map(item => item.element);
-    return elements[0] || null;
+    const [firstElement] = Object.values(this.focusableElements).map(
+      (item) => item.element,
+    );
+    return firstElement ?? null;
   }
 
   registerFocusable(element: HTMLElement, focusKey?: string): void {
@@ -122,12 +121,18 @@ export class FocusManager implements IFocusManager {
         element,
         focusable: true,
         tabIndex: -1,
-        focusKey: focusKey || undefined
+        focusKey,
       };
       this.focusableElements[elementId] = focusableElement;
-      element.setAttribute(this.options.focusableAttribute!, 'true');
+      element.setAttribute(
+        this.options.focusableAttribute ?? "data-focusable",
+        "true",
+      );
       if (focusKey) {
-        element.setAttribute(this.options.focusKeyAttribute!, focusKey);
+        element.setAttribute(
+          this.options.focusKeyAttribute ?? "data-focus-key",
+          focusKey,
+        );
       }
     }
   }
@@ -136,49 +141,43 @@ export class FocusManager implements IFocusManager {
     const elementId = this.getElementId(element);
     if (this.focusableElements[elementId]) {
       delete this.focusableElements[elementId];
-      element.removeAttribute(this.options.focusableAttribute!);
-      element.removeAttribute(this.options.focusKeyAttribute!);
+      element.removeAttribute(
+        this.options.focusableAttribute ?? "data-focusable",
+      );
+      element.removeAttribute(
+        this.options.focusKeyAttribute ?? "data-focus-key",
+      );
     }
   }
 
   private handleEnterKey(): void {
-    if (this.currentFocus) {
-      this.currentFocus.click();
-    }
+    this.currentFocus?.click();
   }
 
   private handleBackKey(): void {
-    // Back button implementation - can be customized for specific needs
     window.history.back();
   }
 
   destroy(): void {
-    document.removeEventListener('keydown', this.boundHandleKeyDown);
+    document.removeEventListener("keydown", this.boundHandleKeyDown);
     this.focusableElements = {};
     this.currentFocus = null;
   }
 
   private getElementId(element: HTMLElement): string {
-    var focusId = element.getAttribute('data-focus-id');
+    const focusId = element.getAttribute("data-focus-id");
     if (!focusId) {
-      focusId = `focus_${Math.random().toString(36).substr(2, 9)}`;
-      element.setAttribute('data-focus-id', focusId);
+      const newId = `focus_${Math.random().toString(36).slice(2, 11)}`;
+      element.setAttribute("data-focus-id", newId);
+      return newId;
     }
     return focusId;
   }
 
-  private mergeOptions(target: IFocusManagerOptions, source: IFocusManagerOptions): IFocusManagerOptions {
-    const result: IFocusManagerOptions = {};
-    for (const key in target) {
-      if (Object.prototype.hasOwnProperty.call(target, key)) {
-        result[key as keyof IFocusManagerOptions] = target[key as keyof IFocusManagerOptions];
-      }
-    }
-    for (const key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        result[key as keyof IFocusManagerOptions] = source[key as keyof IFocusManagerOptions];
-      }
-    }
-    return result;
+  private mergeOptions(
+    target: IFocusManagerOptions,
+    source: IFocusManagerOptions,
+  ): IFocusManagerOptions {
+    return { ...target, ...source };
   }
-} 
+}

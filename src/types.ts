@@ -13,7 +13,6 @@ export interface IFocusManagerOptions {
 }
 
 export interface IFocusManager {
-  initialize(options?: IFocusManagerOptions): void;
   setFocus(element: HTMLElement): void;
   getFocus(): HTMLElement | null;
   moveFocus(direction: FocusDirection): void;
@@ -22,4 +21,4 @@ export interface IFocusManager {
   destroy(): void;
 }
 
-export type FocusDirection = 'up' | 'down' | 'left' | 'right'; 
+export type FocusDirection = "up" | "down" | "left" | "right";
