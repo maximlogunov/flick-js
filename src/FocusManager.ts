@@ -1,7 +1,7 @@
 import { IFocusableElement, IFocusManagerOptions, FocusDirection, IFocusManager } from './types';
 
 export class FocusManager implements IFocusManager {
-  private focusableElements: { [key: string]: IFocusableElement } = {};
+  private focusableElements: Record<string, IFocusableElement> = {};
   private currentFocus: HTMLElement | null = null;
   private options: IFocusManagerOptions = {
     focusableSelector: '[data-focusable]',
@@ -161,7 +161,7 @@ export class FocusManager implements IFocusManager {
   private getElementId(element: HTMLElement): string {
     var focusId = element.getAttribute('data-focus-id');
     if (!focusId) {
-      focusId = 'focus_' + Math.random().toString(36).substr(2, 9);
+      focusId = `focus_${Math.random().toString(36).substr(2, 9)}`;
       element.setAttribute('data-focus-id', focusId);
     }
     return focusId;
@@ -169,14 +169,14 @@ export class FocusManager implements IFocusManager {
 
   private mergeOptions(target: IFocusManagerOptions, source: IFocusManagerOptions): IFocusManagerOptions {
     const result: IFocusManagerOptions = {};
-    for (var key in target) {
-      if (target.hasOwnProperty(key)) {
-        (result as any)[key] = (target as any)[key];
+    for (const key in target) {
+      if (Object.prototype.hasOwnProperty.call(target, key)) {
+        result[key as keyof IFocusManagerOptions] = target[key as keyof IFocusManagerOptions];
       }
     }
-    for (var key in source) {
-      if (source.hasOwnProperty(key)) {
-        (result as any)[key] = (source as any)[key];
+    for (const key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        result[key as keyof IFocusManagerOptions] = source[key as keyof IFocusManagerOptions];
       }
     }
     return result;
