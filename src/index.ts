@@ -1,2 +1,2 @@
-export * from './types';
-export { FocusManager } from './FocusManager'; 
+export * from "./types";
+export { default as FocusManager } from "./FocusManager";

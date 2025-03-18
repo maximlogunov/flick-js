@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { FocusManager } from "flick-js";
 import "./ItemDetails.css";
 
 interface ItemDetailsProps {
@@ -12,9 +13,38 @@ interface ItemDetailsProps {
 }
 
 export const ItemDetails: React.FC<ItemDetailsProps> = ({ item, onBack }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const focusManagerRef = useRef<FocusManager | null>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      focusManagerRef.current = new FocusManager({
+        focusableSelector: "button",
+        defaultFocusKey: "back-button",
+      });
+
+      const backButton = containerRef.current.querySelector(
+        ".back-button",
+      ) as HTMLElement;
+      if (backButton) {
+        focusManagerRef.current.registerFocusable(backButton, "back-button");
+        backButton.addEventListener("focus", () =>
+          backButton.classList.add("focused"),
+        );
+        backButton.addEventListener("blur", () =>
+          backButton.classList.remove("focused"),
+        );
+      }
+
+      return () => {
+        focusManagerRef.current?.destroy();
+      };
+    }
+  }, []);
+
   return (
-    <div className="item-details">
-      <button className="back-button" onClick={onBack}>
+    <div className="item-details" ref={containerRef}>
+      <button className="back-button" onClick={onBack} tabIndex={0}>
         Back
       </button>
       <div className="item-content">

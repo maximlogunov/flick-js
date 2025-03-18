@@ -25,10 +25,13 @@
   flex: 0 0 200px;
   cursor: pointer;
   transition: transform 0.2s;
+  outline: none;
 }
 
-.rail-item:hover {
+.rail-item.focused {
   transform: scale(1.05);
+  box-shadow: 0 0 0 2px #ffffff;
+  border-radius: 8px;
 }
 
 .rail-item img {

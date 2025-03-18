@@ -1,5 +1,6 @@
+import "@testing-library/jest-dom";
 import { IFocusManager } from "../types";
-import { FocusManager } from "../FocusManager";
+import FocusManager from "../FocusManager";
 
 describe("FocusManager", () => {
   let focusManager: IFocusManager;

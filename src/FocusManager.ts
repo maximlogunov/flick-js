@@ -5,7 +5,7 @@ import {
   IFocusManager,
 } from "./types";
 
-export class FocusManager implements IFocusManager {
+export default class FocusManager implements IFocusManager {
   private focusableElements: Record<string, IFocusableElement> = {};
   private currentFocus: HTMLElement | null = null;
   private options: IFocusManagerOptions = {
