@@ -1,0 +1,46 @@
+.rail {
+  margin: 20px 0;
+  padding: 0 20px;
+}
+
+.rail-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.rail-content {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 10px 0;
+  scrollbar-width: none;
+}
+
+.rail-content::-webkit-scrollbar {
+  display: none;
+}
+
+.rail-item {
+  flex: 0 0 200px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.rail-item:hover {
+  transform: scale(1.05);
+}
+
+.rail-item img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.rail-item h3 {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #ffffff;
+  text-align: center;
+} 
