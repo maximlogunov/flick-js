@@ -9,5 +9,6 @@ module.exports = {
       tsconfig: 'tsconfig.json'
     }]
   },
-  setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts']
+  setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
+  testPathIgnorePatterns: ['/example/']
 }; 
