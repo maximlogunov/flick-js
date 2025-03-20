@@ -28,12 +28,6 @@ export const ItemDetails: React.FC<ItemDetailsProps> = ({ item, onBack }) => {
       ) as HTMLElement;
       if (backButton) {
         focusManagerRef.current.registerFocusable(backButton, "back-button");
-        backButton.addEventListener("focus", () =>
-          backButton.classList.add("focused"),
-        );
-        backButton.addEventListener("blur", () =>
-          backButton.classList.remove("focused"),
-        );
       }
 
       return () => {

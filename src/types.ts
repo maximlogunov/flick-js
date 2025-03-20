@@ -6,10 +6,11 @@ export interface IFocusableElement {
 }
 
 export interface IFocusManagerOptions {
-  defaultFocusKey?: string | null;
-  focusableSelector?: string | null;
-  focusableAttribute?: string | null;
-  focusKeyAttribute?: string | null;
+  focusableSelector?: string;
+  focusableAttribute?: string;
+  focusKeyAttribute?: string;
+  focusedClass?: string;
+  defaultFocusKey?: string;
 }
 
 export interface IFocusManager {

@@ -39,12 +39,6 @@ export const Rail: React.FC<RailProps> = ({
         ) as HTMLElement;
         if (element) {
           focusManagerRef.current?.registerFocusable(element, item.id);
-          element.addEventListener("focus", () =>
-            element.classList.add("focused"),
-          );
-          element.addEventListener("blur", () =>
-            element.classList.remove("focused"),
-          );
         }
       });
 

@@ -12,6 +12,7 @@ export default class FocusManager implements IFocusManager {
     focusableSelector: "[data-focusable]",
     focusableAttribute: "data-focusable",
     focusKeyAttribute: "data-focus-key",
+    focusedClass: "focused",
   };
 
   private boundHandleKeyDown = this.handleKeyDown.bind(this);
@@ -62,8 +63,15 @@ export default class FocusManager implements IFocusManager {
   setFocus(element: HTMLElement): void {
     const elementId = this.getElementId(element);
     if (this.focusableElements[elementId]) {
+      if (this.currentFocus) {
+        this.currentFocus.classList.remove(
+          this.options.focusedClass ?? "focused",
+        );
+      }
+
       this.currentFocus = element;
       element.focus();
+      element.classList.add(this.options.focusedClass ?? "focused");
     }
   }
 
@@ -140,6 +148,8 @@ export default class FocusManager implements IFocusManager {
   unregisterFocusable(element: HTMLElement): void {
     const elementId = this.getElementId(element);
     if (this.focusableElements[elementId]) {
+      element.classList.remove(this.options.focusedClass ?? "focused");
+
       delete this.focusableElements[elementId];
       element.removeAttribute(
         this.options.focusableAttribute ?? "data-focusable",
@@ -159,6 +169,12 @@ export default class FocusManager implements IFocusManager {
   }
 
   destroy(): void {
+    if (this.currentFocus) {
+      this.currentFocus.classList.remove(
+        this.options.focusedClass ?? "focused",
+      );
+    }
+
     document.removeEventListener("keydown", this.boundHandleKeyDown);
     this.focusableElements = {};
     this.currentFocus = null;
