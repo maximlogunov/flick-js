@@ -17,6 +17,7 @@
     "build:esm": "babel src --out-dir dist/esm --extensions \".ts,.tsx\" --source-maps --config-file ./babel.config.esm.js",
     "build:cjs": "babel src --out-dir dist/cjs --extensions \".ts,.tsx\" --source-maps --config-file ./babel.config.cjs",
     "build": "npm run build:types && npm run build:esm && npm run build:cjs",
+    "build:watch": "tsc --watch --emitDeclarationOnly --outDir dist/types & npm run build:esm -- --watch & npm run build:cjs -- --watch",
     "test": "jest",
     "lint": "eslint src/**/*.ts",
     "lint-staged": "lint-staged",
